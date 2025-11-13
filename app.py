@@ -140,6 +140,13 @@ def _ensure_devices():
         DEVICES[fixed_id] = d
 
 
+def _bootstrap_db():
+    try:
+        dbsvc.init_db()
+    except Exception as exc:
+        app.logger.warning("DB init failed: %s", exc)
+
+
 @app.route('/api/devices', methods=['GET'])
 def api_devices():
     _ensure_devices()
@@ -220,6 +227,7 @@ def _bootstrap_devices():
         _ensure_devices()
     except Exception:
         pass
+    _bootstrap_db()
     _start_tick_thread()
 
 # Call immediately so it runs once when the module is imported
